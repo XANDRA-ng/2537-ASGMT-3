@@ -81,7 +81,7 @@ async function initDB() {
 
     if(count < 1) {
         results = await connection.query("INSERT INTO user (email, password) values ('arron_ferguson@bcit.ca', 'admin')");
-        console.log("Added one user record.");
+        console.log("Added one user record. Test");
     }
     connection.end();
 }
