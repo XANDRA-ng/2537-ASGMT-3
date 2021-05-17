@@ -38,7 +38,7 @@ app.get('/', function (req, res) {
     let d = new Date().toLocaleDateString("en-US", dateOptions);
     // where we'll slip in an audio player into the footer's left :)
     $("#footer").append('<div id="left"></div>');
-    $("#footer").append("<p id='right'>Copyright ©2021, (YOUR NAME HERE), Inc. Updated: " + d + "</p>");
+    $("#footer").append("<p id='right'>Copyright ©2021, (Marco Theron, Hyeon Kim, Quang Tung Trinh, Nguyen Tuong Kim Thuy, Maximus Joe), Inc. Updated: " + d + "</p>");
 
 
 

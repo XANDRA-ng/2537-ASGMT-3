@@ -5,7 +5,7 @@ $(document).ready(function() {
               MIT License
      */
               $('#left').buttonAudioPlayer({
-                  /* 57 year old Norman Cook, godfather of big beat, AKA Fatboy Slim */
+                  /* pain and suffering */
                   src: '/media/On_the_Floor_Gonna_Shake_It_-_Fatboy_Slim_and_Idris_Elba.mp3',
                   type:'bar-animation',
                   loop:true
