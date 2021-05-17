@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Social Night</title>
+    <title>Curb It</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Yay! Pandemic Over! We can hang out again!"/>
 
-    <!-- Generate favicons using: https://favicon.io/ -->
-    <link href="/img/favicon.ico" rel="icon" type="image/x-icon" />
+    <link href="/imgs/logo.png" rel="icon" type="image/x-icon" />
     <link href="/css/style.css" rel="stylesheet"/>
-    <link href="/css/jquery.button-audio-player.css" rel="stylesheet"/>
   </head>
   <body>
     <div id="formPanel">
@@ -30,20 +27,8 @@
     </footer>
 
     <script src="/js/jquery-3.6.0.min.js"></script>
-    <script src="/js/jquery.button-audio-player.js"></script>
     <script>
       $(document).ready(function() {
-/*
-          Great resource for jQuery plugins, that's where I found the audio player plugin
-          https://www.jqueryscript.net/other/single-button-audio-player.html
-          MIT License
- */
-          $('#left').buttonAudioPlayer({
-              /* 57 year old Norman Cook, godfather of big beat, AKA Fatboy Slim */
-              src: '/media/On_the_Floor_Gonna_Shake_It_-_Fatboy_Slim_and_Idris_Elba.mp3',
-              type:'bar-animation',
-              loop:true
-            });
 
         $("#submit").click(function() {
             $.ajax({

@@ -18,6 +18,8 @@ app.use('/fonts', express.static('assets/fonts'));
 app.use('/html', express.static('assets/html'));
 app.use('/media', express.static('assets/media'));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
 app.use(session(
   {
@@ -34,16 +36,7 @@ app.get('/', function (req, res) {
     // let's make a minor change to the page before sending it off ...
     let dom = new JSDOM(doc);
     let $ = require("jquery")(dom.window);
-
-
-    let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    let d = new Date().toLocaleDateString("en-US", dateOptions);
-    // where we'll slip in an audio player into the footer's left :)
-    $("#footer").append('<div id="left"></div>');
-    $("#footer").append("<p id='right'>Copyright ©2021, (YOUR NAME HERE), Inc. Updated: " + d + "</p>");
-
-
-
+    
     initDB();
 
     res.set('Server', 'Wazubi Engine');
@@ -86,67 +79,12 @@ async function initDB() {
     connection.end();
 }
 
-
-//////////////////////////////////////////////////////////////////////
-// DOESN'T WORK AS WE WANT!!!
-//////////////////////////////////////////////////////////////////////
-function initDBAsyncProblem() {
-
-
-    // Let's build the DB if it doesn't exist
-    const connection = mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: '',
-      multipleStatements: true
-    });
-
-    const createDBAndTables = `CREATE DATABASE IF NOT EXISTS test;
-        use test;
-        CREATE TABLE IF NOT EXISTS user (
-        ID int NOT NULL AUTO_INCREMENT,
-        email varchar(30),
-        password varchar(30),
-        PRIMARY KEY (ID));`;
-
-
-    connection.connect();
-    connection.query(createDBAndTables, function (error, results, fields) {
-        if (error) {
-            throw error;
-        }
-
-    });
-    let count = 0;
-    connection.query("SELECT COUNT(*) FROM user", function (error, results, fields) {
-        if (error) {
-            throw error;
-        }
-        count = results[0]['COUNT(*)'];
-        console.log("count in the callback is", count);
-    });
-    console.log("count out of the callback is", count);
-    if(count == 0) {
-
-        connection.query("INSERT INTO user (email, password) values ('arron@bcit.ca', 'admin')", function (error, results, fields) {
-            if (error) {
-                throw error;
-            }
-        });
-
-    }
-    connection.end();
-}
-
-
-
 app.get('/profile', function(req, res) {
 
     // check for a session first!
     if(req.session.loggedIn) {
 
-        // DIY templating with DOM, this is only the husk of the page
-        let templateFile = fs.readFileSync('./assets/templates/profile_template.html', "utf8");
+        let templateFile = fs.readFileSync('./assets/templates/newsfeed-template.html', "utf8");
         let templateDOM = new JSDOM(templateFile);
         let $template = require("jquery")(templateDOM.window);
 
@@ -154,26 +92,11 @@ app.get('/profile', function(req, res) {
         $template("#profile_name").html(req.session.email);
 
         // insert the left column from a different file (or could be a DB or ad network, etc.)
-        let left = fs.readFileSync('./assets/templates/left_content.html', "utf8");
-        let leftDOM = new JSDOM(left);
-        let $left = require("jquery")(leftDOM.window);
+        let content = fs.readFileSync('./assets/templates/content.html', "utf8");
+        let contentDOM = new JSDOM(content);
+        let $content = require("jquery")(contentDOM.window);
         // Replace!
-        $template("#left_placeholder").replaceWith($left("#left_column"));
-
-        // insert the left column from a different file (or could be a DB or ad network, etc.)
-        let middle = fs.readFileSync('./assets/templates/middle_content.html', "utf8");
-        let middleDOM = new JSDOM(middle);
-        let $middle = require("jquery")(middleDOM.window);
-        // Replace!
-        $template("#middle_placeholder").replaceWith($middle("#middle_column"));
-
-
-        // insert the left column from a different file (or could be a DB or ad network, etc.)
-        let right = fs.readFileSync('./assets/templates/right_content.html', "utf8");
-        let rightDOM = new JSDOM(right);
-        let $right = require("jquery")(rightDOM.window);
-        // Replace!
-        $template("#right_placeholder").replaceWith($right("#right_column"));
+        $template("#content_placeholder").replaceWith($left("#content"));
 
         res.set('Server', 'Wazubi Engine');
         res.set('X-Powered-By', 'Wazubi');
@@ -187,20 +110,9 @@ app.get('/profile', function(req, res) {
 
 });
 
-
-// No longer need body-parser!
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
-
-
 // Notice that this is a 'POST'
 app.post('/authenticate', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
-
-
-//    console.log("Email", req.body.email);
-//    console.log("Password", req.body.password);
-
 
     let results = authenticate(req.body.email, req.body.password,
         function(rows) {
